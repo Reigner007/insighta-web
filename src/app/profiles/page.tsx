@@ -66,11 +66,7 @@ export default function ProfilesPage() {
             <p className="text-gray-400 text-sm mt-1">{total.toLocaleString()} total profiles</p>
           </div>
           
-            href={`${process.env.NEXT_PUBLIC_API_URL}/api/profiles/export?format=csv`}
-            className="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg text-sm hover:bg-gray-700 transition-colors"
-          >
-            Export CSV
-          </a>
+           <a href={`${process.env.NEXT_PUBLIC_API_URL}/api/profiles/export?format=csv`} className="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg text-sm hover:bg-gray-700 transition-colors">Export CSV</a>
         </div>
 
         {/* Filters */}
