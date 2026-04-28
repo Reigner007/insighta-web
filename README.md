@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Insighta Web Portal
 
-## Getting Started
+A Next.js web portal for the Insighta Labs+ platform. Provides a visual interface for non-technical users to interact with demographic profile data.
 
-First, run the development server:
+---
+
+## Tech Stack
+
+- Next.js 16 + TypeScript
+- Tailwind CSS
+- Axios (with auto token refresh)
+- HTTP-only cookies for token storage
+- Deployed on Vercel
+
+---
+
+## Authentication Flow
+
+1. User clicks "Continue with GitHub" on `/login`
+2. Redirected to `/auth/github` on the backend
+3. GitHub OAuth flow completes
+4. Backend sets HTTP-only cookies (`access_token`, `refresh_token`)
+5. User redirected to `/dashboard`
+6. On 401, axios interceptor auto-calls `/auth/refresh`
+7. New tokens set in cookies, original request retried
+
+---
+
+## Token Handling
+
+- Tokens stored in **HTTP-only cookies** — not accessible via JavaScript
+- Access token: 60 minutes
+- Refresh token: 5 minutes
+- Auto-refresh handled by axios interceptor in `src/lib/api.ts`
+- On failed refresh, user redirected to `/login`
+
+---
+
+## Pages
+
+| Route | Description | Auth Required |
+|---|---|---|
+| `/login` | GitHub OAuth login | ❌ |
+| `/dashboard` | Metrics overview | ✅ |
+| `/profiles` | Filterable profile list | ✅ |
+| `/profiles/[id]` | Profile detail view | ✅ |
+| `/search` | Natural language search | ✅ |
+| `/account` | User info + logout | ✅ |
+
+---
+
+## Setup
 
 ```bash
+npm install
+cp .env.local.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+NEXT_PUBLIC_API_URL=https://insighta-api.vercel.app
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Live URL
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+https://insighta-web.vercel.app
