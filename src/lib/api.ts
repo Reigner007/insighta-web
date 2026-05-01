@@ -35,17 +35,18 @@ api.interceptors.response.use(
       original._retry = true;
 
       try {
-        await axios.post(
-          `${BASE_URL}/auth/refresh`,
-          {},
-          { withCredentials: true }
-        );
-        // Rotate CSRF token after refresh
-        csrfToken = generateCSRFToken();
-        return api(original);
-      } catch {
-        window.location.href = "/login";
-      }
+  await axios.post(
+    `${BASE_URL}/auth/refresh`,
+    {},
+    { 
+      withCredentials: true,
+      headers: { "Content-Type": "application/json" }
+    }
+  );
+  return api(original);
+} catch {
+  window.location.href = "/login";
+}
     }
 
     return Promise.reject(error);
